@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cf60a28b8de8e1745a783c8868ec9adf
+guid: 08d2e992fe9b97e4f8adacd1ff8555ee
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -105,7 +105,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: catJump_0
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 365
+        width: 95
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5644111ea0efcf45ac86580cf8d0c70
+      internalID: 239787780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: catJump_1
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 380
+        width: 95
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b82e15b31626614e9ee95b284bae4d5
+      internalID: 549494357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: catJump_2
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 240
+        width: 95
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5de10ecb81b71424d883a619ce5ee6c8
+      internalID: -1659686732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: catJump_3
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 210
+        width: 95
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1121e90016875464bae869eea8b10877
+      internalID: -2092538255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: catJump_4
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 45
+        width: 95
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6f925fd9e4c1e34fb04272d883455f7
+      internalID: -1713781451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -116,7 +221,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      catJump_0: 239787780
+      catJump_1: 549494357
+      catJump_2: -1659686732
+      catJump_3: -2092538255
+      catJump_4: -1713781451
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
