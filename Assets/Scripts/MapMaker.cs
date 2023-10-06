@@ -11,6 +11,8 @@ public class MapMaker : MonoBehaviour
     public GameObject tJunct;
     public GameObject pellet;
     public GameObject powerpellet;
+    public GameObject mapquarter;
+    public float tileSize = 1.0f;
     int[,] levelMap =
  {
  {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
@@ -41,14 +43,56 @@ public class MapMaker : MonoBehaviour
     void Start()
     {
         //hide the original map (bad now cause i added way more)
-       /* outCorner.SetActive(false);
-        inCorner.SetActive(false);
-        outWall.SetActive(false);
-        inWall.SetActive(false);
-        tJunct.SetActive(false); */
+        /* outCorner.SetActive(false);
+         inCorner.SetActive(false);
+         outWall.SetActive(false);
+         inWall.SetActive(false);
+         tJunct.SetActive(false); */
+        //mapquarter.SetActive(false);
+        for (int row = 0; row < levelMap.GetLength(0); row++)
+        {
+            for (int col = 0; col < levelMap.GetLength(1); col++)
+            {
+                int tileValue = levelMap[row, col];
 
-        //for loop to go through the array and add gameobjects based on number
-        
+                Vector3 tilePosition = new Vector3(col * tileSize, -row * tileSize, 0);
+
+                GameObject tilePrefab = null;
+
+                switch (tileValue)
+                {
+                    case 1:
+                        tilePrefab = outCorner;
+                        break;
+                    case 2:
+                        tilePrefab = outWall;
+                        break;
+                    case 3:
+                        tilePrefab = inCorner;
+                        break;
+                    case 4:
+                        tilePrefab = inWall;
+                        break;
+                    case 5:
+                        tilePrefab = pellet;
+                        break;
+                    case 6:
+                        tilePrefab = powerpellet;
+                        break;
+                    case 7:
+                        tilePrefab = tJunct;
+                        break;
+                }
+
+                if (tilePrefab != null)
+                {
+                    GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
+                }
+            }
+        }
+
+
+
     }
 
     // Update is called once per frame
