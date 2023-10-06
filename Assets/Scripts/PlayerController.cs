@@ -13,9 +13,11 @@ public class PlayerController : MonoBehaviour
     public float right = 0f;
     public float left = 0f;
     public float health = 1f;
+    private Vector3 initialPlayerPosition;
     // Start is called before the first frame update
     void Start()
     {
+        initialPlayerPosition = player.transform.position;
         tweener = GetComponent<Tweener>(); 
     }
 
@@ -27,12 +29,13 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("left", left);
         animator.SetFloat("up", up);
         animator.SetFloat("health", health);
+        initialPlayerPosition = player.transform.position;
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             speed = 1;
             up = 1;
-            tweener.AddTween(player.transform, player.transform.position, new Vector3(0.0f, 0.5f, -2.0f), 0.5f);
+            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(0.0f, 0.5f, -2.0f), 1.5f);
 
         } else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
         {
@@ -42,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
-            tweener.AddTween(player.transform, player.transform.position, new Vector3(-2.0f, 0.5f, 0.0f), 1.5f);
+            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(-2.0f, 0.5f, 0.0f), 1.5f);
             speed = 1;
             left = 1;
         }
@@ -57,7 +60,7 @@ public class PlayerController : MonoBehaviour
         {
             speed = 1;
             right = 1;
-            tweener.AddTween(player.transform, player.transform.position, new Vector3(2.0f, 0.5f, 0.0f), 1.5f);
+            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(2.0f, 0.5f, 0.0f), 1.5f);
         }
         else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.LeftArrow))
         {
@@ -67,7 +70,7 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             speed = 1;
-            tweener.AddTween(player.transform, player.transform.position, new Vector3(0.0f, 0.5f, 2.0f), 0.5f);
+            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(0.0f, 0.5f, 2.0f), 1.5f);
         }
         else if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.DownArrow))
         {

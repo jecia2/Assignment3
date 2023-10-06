@@ -9,6 +9,8 @@ public class MapMaker : MonoBehaviour
     public GameObject inWall;
     public GameObject outWall;
     public GameObject tJunct;
+    public GameObject pellet;
+    public GameObject powerpellet;
     int[,] levelMap =
  {
  {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
@@ -38,11 +40,14 @@ public class MapMaker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //hide the original map (bad now cause i added way more)
        /* outCorner.SetActive(false);
         inCorner.SetActive(false);
         outWall.SetActive(false);
         inWall.SetActive(false);
         tJunct.SetActive(false); */
+
+        //for loop to go through the array and add gameobjects based on number
         
     }
 

@@ -30,7 +30,7 @@ public class Tweener : MonoBehaviour
             float timeStuff = (Time.time - activeTween.StartTime) / activeTween.Duration;
             float percentage = timeStuff / targetDist;
             //Debug.Log(percentage);
-            Debug.Log("yippee");
+            //Debug.Log("yippee");
             if (targetDist > 0.1f)
             {
                 activeTween.Target.position = Vector3.Lerp(activeTween.StartPos, activeTween.EndPos, percentage);
