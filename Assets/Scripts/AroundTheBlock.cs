@@ -45,6 +45,7 @@ public class AroundTheBlock : MonoBehaviour
 
         if (journeyFraction < 1.0f)
         {
+            transform.Rotate(0f, 0f, 90f);
             transform.position = Vector3.Lerp(startPosition, endPosition, journeyFraction);
             animator.SetFloat("speed", speed);
             speed = 1f;
