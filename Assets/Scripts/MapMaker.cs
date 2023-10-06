@@ -58,20 +58,37 @@ public class MapMaker : MonoBehaviour
                 Vector3 tilePosition = new Vector3(col * tileSize, -row * tileSize, 0);
 
                 GameObject tilePrefab = null;
+                float tileRotation = 0f;
 
                 switch (tileValue)
                 {
                     case 1:
                         tilePrefab = outCorner;
+                        if(col == levelMap.GetLength(1))
+                        {
+                            tileRotation = 270f;
+                        }
                         break;
                     case 2:
                         tilePrefab = outWall;
+                        if(col > 0 && col <levelMap.GetLength(1) - 1)
+                        {
+                            tileRotation = 90f;
+                        }
                         break;
                     case 3:
                         tilePrefab = inCorner;
+                        if (col == levelMap.GetLength(1))
+                        {
+                            tileRotation = 270f;
+                        }
                         break;
                     case 4:
                         tilePrefab = inWall;
+                        if (col > 0 && col < levelMap.GetLength(1) - 1)
+                        {
+                            tileRotation = 90f;
+                        }
                         break;
                     case 5:
                         tilePrefab = pellet;
@@ -86,7 +103,7 @@ public class MapMaker : MonoBehaviour
 
                 if (tilePrefab != null)
                 {
-                    GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
+                    GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.Euler(0f, 0f, tileRotation));
                 }
             }
         }
