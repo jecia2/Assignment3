@@ -4,37 +4,51 @@ using UnityEngine;
 
 public class GhostController : MonoBehaviour
 {
+    public float moveSpeed = 5.0f;
+    private Transform pacStudent;
+    //private Vector3 currentTarget;
+    //private bool isMoving = false;
     public Animator defaultAnimator;
     public Animator blueAnimator;
     public Animator greenAnimator;
     public Animator purpleAnimator;
-
     public float scared = 0f;
-    public float duckHealth = 0f;
-    // Start is called before the first frame update
+
     void Start()
     {
-
+        //pacStudent = GameObject.FindWithTag("Player").transform;
+        //currentTarget = pacStudent.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         defaultAnimator.SetFloat("scared", scared);
         blueAnimator.SetFloat("scared", scared);
         greenAnimator.SetFloat("scared", scared);
         purpleAnimator.SetFloat("scared", scared);
-
-
-        //dummy to test animation
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+      /*  if (!isMoving)
         {
-            scared = 1;
-        }
-        else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            scared = 0;
-        }
-
+            currentTarget = pacStudent.position;
+            MoveToTarget(currentTarget);
+        }*/
     }
+
+    /*void MoveToTarget(Vector3 target)
+    {
+        isMoving = true;
+        StartCoroutine(MoveCoroutine(target));
+    }
+
+    IEnumerator MoveCoroutine(Vector3 target)
+    {
+        while (transform.position != target)
+        {
+            float step = moveSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, target, step);
+
+            yield return null;
+        }
+
+        isMoving = false;
+    }*/
 }

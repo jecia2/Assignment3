@@ -1,86 +1,242 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.Xml.Linq;
+using Unity.Burst.Intrinsics;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static UnityEditor.VersionControl.Asset;
 
 public class PlayerController : MonoBehaviour
 {
     public Animator animator;
     public GameObject player;
-    private Tweener tweener;
+    public AudioSource walkingAudio;
+    public ParticleSystem dust;
+    public ParticleSystem walldust;
+    public Text ghostTimerText;
 
-    public float speed = 0f;
-    public float up = 0f;
-    public float right = 0f;
-    public float left = 0f;
-    public float health = 1f;
-    private Vector3 initialPlayerPosition;
-    // Start is called before the first frame update
+    public float moveSpeed = 5f;
+    private Vector3 moveDirection = Vector3.zero;
+    private Vector3 targetPosition;
+    private bool isMoving = false;
+    private KeyCode lastInputKey;
+    public AudioSource collisionSound;
+    public AudioSource background;
+    public AudioSource ghostScared;
+    //private AudioSource audioSource;
+    public AudioSource eatingSound;
+    private bool isObstructed = false;
+    public GameObject leftTeleporter;
+    public GameObject rightTeleporter;
+    public Animator defaultAnimator;
+    public Animator blueAnimator;
+    public Animator greenAnimator;
+    public Animator purpleAnimator;
+    public float scared = 0f;
+    public float recovery = 0f;
+    public float ghostlength;
+    private float elapsedTime = 0f;
+   // private bool gameStarted = false;
+    public Text timerTextUI;
+
+
     void Start()
     {
-        initialPlayerPosition = player.transform.position;
-        tweener = GetComponent<Tweener>(); 
+        targetPosition = player.transform.position;
+        walkingAudio.Stop();
+        ghostTimerText.gameObject.SetActive(false);
+       // audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        animator.SetFloat("speed", speed);
-        animator.SetFloat("right", right);
-        animator.SetFloat("left", left);
-        animator.SetFloat("up", up);
-        animator.SetFloat("health", health);
-        initialPlayerPosition = player.transform.position;
+        animator.SetFloat("speed", moveSpeed);
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            speed = 1;
-            up = 1;
-            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(0.0f, 0.5f, -2.0f), 1.5f);
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        GetLastInputKey(horizontalInput, verticalInput);
 
-        } else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
+        if (!isMoving)
         {
-            speed = 0;
-            up = 0;
-        }
+            moveDirection = new Vector3(horizontalInput, verticalInput, 0);
 
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(-2.0f, 0.5f, 0.0f), 1.5f);
-            speed = 1;
-            left = 1;
-        }
-        else if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            speed = 0;
-            left = 0;
-            
-        }
+            if (moveDirection != Vector3.zero)
+            {
+                targetPosition = player.transform.position + moveDirection;
+                dust.Play();
 
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            speed = 1;
-            right = 1;
-            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(2.0f, 0.5f, 0.0f), 1.5f);
+                if (!walkingAudio.isPlaying)
+                {
+                    walkingAudio.Play();
+                }
+
+                StartCoroutine(TweenPacStudent(targetPosition));
+                //Debug.Log(lastInputKey);
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.LeftArrow))
+        defaultAnimator.SetFloat("scared", scared);
+        blueAnimator.SetFloat("scared", scared);
+        greenAnimator.SetFloat("scared", scared);
+        purpleAnimator.SetFloat("scared", scared);
+
+        defaultAnimator.SetFloat("recovery", recovery);
+        blueAnimator.SetFloat("recovery", recovery);
+        greenAnimator.SetFloat("recovery", recovery);
+        purpleAnimator.SetFloat("recovery", recovery);
+
+        if (Time.time > 3f)
         {
-            speed = 0;
-            right = 0;
+            elapsedTime += Time.deltaTime;
+            UpdateTimerUI();
         }
-        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            speed = 1;
-            tweener.AddTween(player.transform, initialPlayerPosition, new Vector3(0.0f, 0.5f, 2.0f), 1.5f);
-        }
-        else if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            speed = 0;
-        }
-        //Death preview
-        /*if (Input.GetKeyDown(KeyCode.Space))
-        {
-            health = 0;
-        }*/
+        ScoreManager scoreManager = FindObjectOfType<ScoreManager>();
+        int score = scoreManager.score;
+
+        PlayerPrefs.SetFloat("Time", elapsedTime);
+        PlayerPrefs.SetInt("Score", score);
 
     }
+
+    private IEnumerator TweenPacStudent(Vector3 destination)
+    {
+        isMoving = true;
+        Vector3 startPosition = player.transform.position;
+        float journeyLength = Vector3.Distance(startPosition, destination);
+        float startTime = Time.time;
+
+        while (Time.time - startTime < journeyLength / moveSpeed)
+        {
+            float distanceCovered = (Time.time - startTime) * moveSpeed;
+            float fractionOfJourney = distanceCovered / journeyLength;
+            player.transform.position = Vector3.Lerp(startPosition, destination, fractionOfJourney);
+
+            if (!isObstructed)
+            {
+                player.transform.position = Vector3.Lerp(startPosition, destination, fractionOfJourney);
+            }
+        yield return null;
+
+
+        }
+
+        player.transform.position = destination;
+        isMoving = false;
+        walkingAudio.Stop();
+        dust.Stop();
+    }
+
+    private KeyCode GetLastInputKey(float horizontalInput, float verticalInput)
+    {
+        if (verticalInput > 0)
+        {
+            return KeyCode.W;
+        }
+        else if (verticalInput < 0)
+        {
+            return KeyCode.S;
+        }
+        else if (horizontalInput < 0)
+        {
+            return KeyCode.A;
+        }
+        else if (horizontalInput > 0)
+        {
+            return KeyCode.D;
+        }
+        return lastInputKey;
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Wall"))
+        {
+            collisionSound.Play();
+            isObstructed = true;
+            walldust.Play();
+            
+        }
+       /* else if (other.CompareTag("leftTeleporter"))
+        {
+            Debug.Log("tele");
+            //TeleportTo(rightTeleporter);
+            player.transform.position = leftTeleporter.transform.position;
+        }
+        else if (other.CompareTag("rightTeleporter"))
+        {
+            Debug.Log("tele");
+            //TeleportTo(leftTeleporter);
+            player.transform.position = rightTeleporter.transform.position;
+        }*/
+
+        if (other.CompareTag("Pellet"))
+        {
+            eatingSound.Play();
+            Destroy(other.gameObject);
+            FindObjectOfType<ScoreManager>().AddToScore(10);
+        }
+        else if (other.CompareTag("Cherry"))
+        {
+            eatingSound.Play();
+            Destroy(other.gameObject);
+            FindObjectOfType<ScoreManager>().AddToScore(100);
+        }
+        if (other.CompareTag("SuperPellet"))
+        {
+            scared = 1f;
+            Destroy(other.gameObject);
+
+        }
+        if (scared > 0.1f)
+        {
+            if (ghostTimerText != null)
+            {
+                ghostTimerText.gameObject.SetActive(true);
+                int remainingTime = Mathf.CeilToInt(ghostlength - (Time.time - 10));
+                ghostTimerText.text = remainingTime.ToString();
+
+                if (remainingTime <= 3)
+                {
+                    scared = 0f;
+                }
+
+                if (Time.time - 10 >= ghostlength)
+                {
+                    recovery = 1f;
+                }
+                ghostTimerText.gameObject.SetActive(false);
+            }
+
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Wall"))
+        {
+            isObstructed = false;
+            walldust.Stop();
+        }
+    }
+    /* private void TeleportTo(GameObject teleporter)
+     {
+         Debug.Log("big tele");
+         player.transform.position = teleporter.transform.position;
+     }*/
+    /* private void GhostScaredBehavior()
+     {
+
+         }*/
+    private void UpdateTimerUI()
+    {
+        int minutes = Mathf.FloorToInt(elapsedTime / 60);
+        int seconds = Mathf.FloorToInt(elapsedTime % 60);
+        int milliseconds = Mathf.FloorToInt((elapsedTime * 100) % 100);
+
+        string timerText = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+
+        timerTextUI.text = timerText;
+    }
 }
+
+
+
